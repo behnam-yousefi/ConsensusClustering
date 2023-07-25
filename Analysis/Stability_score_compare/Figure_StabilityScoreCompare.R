@@ -1,7 +1,7 @@
 ## Figure 3
 
 rm(list = ls())
-setwd("~/Desktop/R_Root/ConsensusClustering")
+setwd("~/Desktop/R_Root/ConsensusCluster")
 library(ggplot2)
 
 

@@ -1,3 +1,5 @@
+# ref: John CR, Watson D, Russ D, et al. M3C: Monte Carlo reference-based consensus clustering. Sci. Rep. 2020; 10:1816
+
 library(ggplot2)
 #' M3C: Monte Carlo Reference-based Consensus Clustering
 #'

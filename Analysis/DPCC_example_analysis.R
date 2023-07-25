@@ -2,7 +2,7 @@
 ## Stability score explanation
 
 rm(list = ls())
-setwd("~/Desktop/R_Root/ConsensusClustering/")
+setwd("~/Desktop/R_Root/ConsensusCluster/")
 
 ## Definitions
 library(cluster)

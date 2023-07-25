@@ -2,7 +2,7 @@
 ## By: Behnam Yousefi
 
 rm(list = ls())
-setwd("~/Desktop/R_Root/ConsensusClustering/")
+setwd("~/Desktop/R_Root/ConsensusCluster/")
 source("R/CC_functions.R")
 source("R/ActivityPlot.R")
 library(tmod)
