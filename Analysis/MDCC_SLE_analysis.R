@@ -10,7 +10,7 @@ library(ggplot2)
 
 ### Find highly variable genes across all the train datasets
 ## 1-Find data set specific highly variable gebes
-data_root = "~/Desktop/R_Root/SLEmap/Data/Curated_Data/"
+data_root = "~/Desktop/R_Root/ConsensusCluster/Analysis/Data/SLED_Curated_Data/"
 gseID_Train = c("GSE65391", "GSE49454", "GSE45291", "GSE22098", "GSE39088")
 GeneNamesToKeep = list()
 for (gseID in gseID_Train) {
