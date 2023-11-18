@@ -1,123 +1,6 @@
-## Consensus clustering functions_...
+## Consensus clustering functions
 ## version that works for multiview data in cases where not all the data is available for all the datasets.
 ## Author: Behnam Yousefi
-library(igraph)
-library(cluster)
-
-## Basic Functions -------------------------------------------------------------
-Logit = function(x)
-  return(log(1*x/(1-x)))
-
-# Build connectivity matrix for resampled clustering
-ConnMat = function (Clusters){
-  Nsample = length(Clusters)
-  M = matrix(0,Nsample,Nsample)
-  for (i in 1:Nsample)
-    for (j in 1:Nsample)
-      if (Clusters[i]*Clusters[j]>0)
-        M[i,j] = ifelse(Clusters[i]==Clusters[j],1,0)
-  return(M)
-}
-
-#
-IndcMat = function (Clusters){
-  Nsample = length(Clusters)
-  I = matrix(0,Nsample,Nsample)
-  for (i in 1:Nsample)
-    for (j in 1:Nsample)
-      I[i,j] = ifelse(Clusters[i]*Clusters[j]>0,1,0)
-  return(I)
-}
-
-# Convert adjacency function to the affinity matrix (Luxburg et al.)
-AdjConv = function(Adj, alpha=1){
-  # Adj must be within [-1, 1]
-  Aff = exp(-(1-Adj)^2/(2*alpha^2))
-  return(Aff)
-}
-
-# Clustering methods
-HirClustFromAdjMat = function (Adj, k = 2, alpha = 1, adj.conv = TRUE, method = "ward.D"){
-  Adj[is.na(Adj)] = 0
-
-  Aff = if(adj.conv)
-    Aff = AdjConv(Adj, alpha)
-  else
-    Aff = Adj
-
-  dists = as.dist(1-Aff)
-  Tree = hclust(dists, method=method)
-  clusters = cutree(Tree, k=k)
-
-  return(clusters)
-}
-
-SpectClustFromAdjMat = function (Adj, k = 2, max.eig = 10, alpha = 1, adj.conv = TRUE, do.plot = FALSE){
-  Adj[is.na(Adj)] = 0
-
-  Aff = if(adj.conv)
-    Aff = AdjConv(Adj, alpha)
-  else
-    Aff = Adj
-
-  graph = graph_from_adjacency_matrix(Aff, mode="undirected", weighted=TRUE)
-  Lsym = as.matrix(laplacian_matrix(graph, normalized = TRUE))
-  Lsym[is.na(Lsym)] = 0
-
-  PCA = prcomp(Lsym)
-  Lambda = PCA$sdev[ncol(Lsym):1]
-  Eigenvectors = PCA$rotation[,ncol(Lsym):1]
-
-  Eigenvectors = Eigenvectors[,1:max.eig]
-  clusters = kmeans(Eigenvectors, k)[["cluster"]]
-
-  if (do.plot)
-    plot(Lambda[1:10], pch = 20, type = "b")
-  return(clusters)
-}
-
-# Clustering methods
-PamClustFromAdjMat = function (Adj, k = 2, alpha = 1, adj.conv = TRUE){
-  Adj[is.na(Adj)] = 0
-
-  Aff = if(adj.conv)
-    Aff = AdjConv(Adj, alpha)
-  else
-    Aff = Adj
-
-  dists = as.dist(1-Aff)
-  clusters = pam(as.matrix(dists), k = k, diss = TRUE, cluster.only=TRUE)
-
-  return(clusters)
-}
-
-## Co-clustering matrix -----------------------------------------------------
-
-coCluster_matrix = function(X){
-  # Calculate the  Co-cluster matrix for a set of given set of clustering results.
-  # Clusters: matrix of Nsamples x Nclusterings
-  # Output: The normalized matrix of Co-cluster frequency of any pairs of samples (Nsamples x Nsamples)
-  # Note that zeros are are considered as unclustered samples
-
-  Nsample = nrow(X)
-  Nmethod = ncol(X)
-
-  M = matrix(0,Nsample,Nsample)
-  I = M
-  pb = txtProgressBar(min = 0, max = Nmethod, style = 3)
-
-  for (cl in 1:Nmethod){
-    M = M + ConnMat(X[,cl])
-    I = I + IndcMat(X[,cl])
-    setTxtProgressBar(pb, cl)
-  }
-  coClusterMatrix = M/I
-  close(pb)
-
-  rownames(coClusterMatrix) = rownames(X)
-  colnames(coClusterMatrix) = rownames(X)
-  return(coClusterMatrix)
-}
 
 ## Multiple K-means -----------------------------------------------------
 # 1. Same data
@@ -323,10 +206,10 @@ consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter 
       Clusters[RandInd] = clusters
 
       ## Connectivity matrix
-      Mi = ConnMat(Clusters)
+      Mi = connectivity_matrix(Clusters)
       M = M + Mi
 
-      Ii = IndcMat(Clusters)
+      Ii = indicator_matrix(Clusters)
       I = I + Ii
     }
     close(pb)
@@ -393,10 +276,10 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
       Clusters[names(clusters)] = clusters
 
       ## Conectivity matrix
-      Mi = ConnMat(Clusters)
+      Mi = connectivity_matrix(Clusters)
       M = M + Mi
 
-      Ii = IndcMat(Clusters)
+      Ii = indicator_matrix(Clusters)
       I = I + Ii
     }
     close(pb)
@@ -478,7 +361,7 @@ CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
     }
 
   }
-  
+
   par(new=FALSE)
 
   deltaA = A

@@ -2,3 +2,4 @@
 .Rhistory
 *.RDS
 .Rproj.user
+*.tar.gz
