@@ -3,10 +3,8 @@
 ## Implementations of the PCC and compare to baselines
 rm(list = ls())
 setwd("~/Desktop/R_Root/ConsensusCluster/")
+library(ConsensusCluster)
 
-## Definitions
-source("R/cluster_generation_functions.R")
-source("R/CC_functions.R")
 
 ## Data generation
 dim  = 2

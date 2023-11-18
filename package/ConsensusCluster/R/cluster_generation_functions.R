@@ -1,9 +1,5 @@
 ## Random data generation functions
 
-# library(mvtnorm)
-source("R/mvnorm.R")
-library(dplyr)
-
 #' ??
 #'
 #' @param x x
@@ -33,7 +29,7 @@ divide_interval_int = function(x,n){
 #' generate_gaussian_data(10, center=c(0,0), sigma=diag(c(1,1)), label=rep(1,10))
 #'
 generate_gaussian_data = function(n, center=0, sigma=1, label=NA) {
-  data = rmvnorm(n, mean = center, sigma = sigma)
+  data = mvtnorm::rmvnorm(n, mean = center, sigma = sigma)
   data = data.frame(data)
   if (!is.na(label))
     data = data %>% dplyr::mutate(class=factor(label))

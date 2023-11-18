@@ -1,168 +1,22 @@
-## Consensus clustering functions
-## version that works for multiview data in cases where not all the data is available for all the datasets.
-## Author: Behnam Yousefi
-
-## Multiple K-means -----------------------------------------------------
-# 1. Same data
-multi_kmeans = function(X, rep = 10, range.k = c(2,5), method = "random"){
-  # X: Sample x feature matrix
-  # K is selected randomly from a discrete uniform distribution between range.k[1] and range.k[2]
-  # method = "random", "silhouette"
-
-  assertthat::assert_that(rep > 0)
-  assertthat::assert_that(range.k[1] > 1)
-  assertthat::assert_that(range.k[2] >= range.k[1])
-
-  Kmin = range.k[1]
-  Kmax = range.k[2]
-  distX = dist(X)
-
-  Clusters = matrix(0, nrow(X), rep)
-  for (i in 1:rep){
-
-    if (method == "silhouette"){
-      Sil = rep(0, Kmax)
-      for (k in Kmin:Kmax){
-        clusters = kmeans(X, k)$cluster
-        sil = silhouette(clusters, distX)
-        Sil[k] = mean(sil[,"sil_width"])
-      }
-      Kopt = which.max(Sil)
-
-    }
-    else if (method == "random"){
-      Kopt = sample(Kmin:Kmax, 1)
-    }
-    else
-      error("err")
-
-    Clusters[,i] = kmeans(X, Kopt)$cluster
-    print(Kopt)
-  }
-
-  return(Clusters)
-}
-
-# 2. Different data
-multiview_kmeans = function(X, rep = 10, range.k = c(2,5), method = "random"){
-  # X: List of Sample x feature matrices
-  # K is selected based on mean Silhouette index for each element of X
-
-  assertthat::assert_that(is.list(X))
-  assertthat::assert_that(range.k[1] > 1)
-  assertthat::assert_that(range.k[2] >= range.k[1])
-
-  Kmin = range.k[1]
-  Kmax = range.k[2]
-  Nview = length(X)
-
-  Clusters = c()
-  for (i in 1:Nview){
-    X_i = X[[i]]
-    cl = multi_kmeans (X_i, rep = rep, range.k = range.k, method = method)
-    Clusters = cbind(Clusters, cl)
-  }
-
-  return(Clusters)
-}
-
-## Multiple PAM -----------------------------------------------------
-# 1. Same data
-multi_pam = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE, method = "random"){
-  # X: Sample x feature matrix
-  # K is selected randomly from a discrete uniform distribution between range.k[1] and range.k[2]
-  # method = "random", "silhouette"
-
-  assertthat::assert_that(rep > 0)
-  assertthat::assert_that(range.k[1] > 1)
-  assertthat::assert_that(range.k[2] >= range.k[1])
-
-  Kmin = range.k[1]
-  Kmax = range.k[2]
-
-  Clusters = matrix(0, nrow(X), rep)
-  for (i in 1:rep){
-
-    if (method == "silhouette"){
-      Sil = rep(0, Kmax)
-      for (k in Kmin:Kmax){
-        pam_result = pam(X, k = k, diss = is.distance)
-        clusters = pam_result$clustering
-        Sil[k] = pam_result$silinfo$avg.width
-      }
-      Kopt = which.max(Sil)
-
-    }
-    else if (method == "random"){
-      Kopt = sample(Kmin:Kmax, 1)
-    }
-    else
-      error("err")
-
-    Clusters[,i] = pam(X, k = Kopt, diss = is.distance, cluster.only = TRUE)
-    print(Kopt)
-  }
-
-  return(Clusters)
-}
-
-# 2. Different data
-multiview_pam = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE, method = "random", sample.set = NA){
-  # X: List of Sample x feature matrices
-  # K is selected based on mean Silhouette index for each element of X
-  ## sample.set: a set of samples the clustering is being applied on. can be names or indices
-  ## if sample.set is NA, we consider all the datasets have the same samples with the same order
-  # method = "random", "silhouette"
-
-  assertthat::assert_that(is.list(X))
-  assertthat::assert_that(range.k[1] > 1)
-  assertthat::assert_that(range.k[2] >= range.k[1])
-
-  if (!is.na(sample.set)[1] & is.null(colnames(X[[1]])))
-    error("err")
-
-  Kmin = range.k[1]
-  Kmax = range.k[2]
-  Nview = length(X)
-
-  Clusters = c()
-  for (i in 1:Nview){
-    X_i = X[[i]]
-
-    if (!is.na(sample.set)[1]){
-
-      IntersectedSamples = intersect(sample.set, colnames(X_i))
-
-      if (is.distance)
-        X_i = X_i[IntersectedSamples,IntersectedSamples]
-      else
-        X_i = X_i[,IntersectedSamples]
-
-    for (r in 1:rep){
-      cl = multi_pam (X_i, rep = 1, range.k = range.k, is.distance = is.distance, method = method)
-      names(cl) = IntersectedSamples
-      clusters = rep(0, length(sample.set))
-      names(clusters) = sample.set
-      clusters[names(cl)] = cl
-      Clusters = cbind(Clusters, clusters)
-    }
-
-    }else{
-      cl = multi_pam (X_i, rep = rep, range.k = range.k, is.distance = is.distance, method = method)
-      Clusters = cbind(Clusters, cl)
-    }
-  }
-  return(Clusters)
-}
-
-## consensus matrix calculation for each Nclust -------------------------------------------
-# 1. Same data
+#' Calculate consensus matrix for data perturbation consensus clustering
+#'
+#' @param X adjacency matrix a Nsample x Nsample
+#' @param max.cluster maximum number of clusters
+#' @param resample.ratio the data ratio to use at each itteration.
+#' @param max.itter maximum number of itterations at each \code{max.cluster}
+#' @param clustering.method base clustering method: \code{c("hclust", "spectral", "pam")}
+#'
+#' @value list of consensus matrices for each k
+#'
+#' @details
+#' performs data perturbation consensus clustering
+#' Monti et al. (2003) consensus clustering algorithm
+#'
+#' @examples
+#' # example code
+#'
 consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter = 100, clustering.method = "hclust",
                             no.cores = 1, adj.conv = TRUE){
-  ## Monti et al. (2003) consensus clustering algorithm
-  ## X is the adjacency matrix a Nsample x Nsample matrix
-  ## The output is the consensus matrix for each k
-  ## method: "hclust", "spectral", "pam"
 
   assertthat::assert_that(ncol(X) == nrow(X))
   assertthat::assert_that(max.cluster>2)
@@ -222,7 +76,9 @@ consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter 
   return(CM)
 }
 
-# 1. Same data
+#' Calculate consensus matrix for multi-data consensus clustering
+
+
 multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clustering.method = "hclust",
                                       no.cores = 1, adj.conv = TRUE){
   ## Monti et al. (2003) consensus clustering algorithm
@@ -292,7 +148,7 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
   return(CM)
 }
 
-## Cluster count function based on consensus matrices  -------------------------------------------
+#' Count the number of clusters based on stability score.
 
 CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
 
@@ -393,80 +249,4 @@ CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
   Result[["Kopt_deltaA"]] = which.max(deltaA)
   Result[["Kopt_CMavg"]] = which.max(CMavg)
   return(Result)
-}
-
-## Null distribution of robust score generation by permuting the Adj -------------------------------------------
-
-robustness_null_dist = function(Adj, rep = 10, max.cluster = 5, resample.ratio = 0.7, max.itter = 100, clustering.method = "hclust",
-                                 is.similarity = TRUE, no.cores = 1, adj.conv = TRUE){
-
-  print("Calculation of the null distribution of robust score ...")
-
-  ScoreList = list()
-  ScoreList[["RobScore"]] = matrix(0, rep, max.cluster)
-  ScoreList[["LogitScore"]] = matrix(0, rep, max.cluster)
-  ScoreList[["PAC"]] = matrix(0, rep, max.cluster)
-  ScoreList[["deltaA"]] = matrix(0, rep, max.cluster)
-  ScoreList[["CMavg"]] = matrix(0, rep, max.cluster)
-
-  N = ncol(Adj)
-
-  for (i in 1:rep){
-    Adj_permuted = matrix(sample(Adj, N*N, replace = TRUE), N,N)
-    # Adj_permuted = SampelGraph_Degree(Adj)
-    CM = consensus_matrix(Adj_permuted, max.cluster = max.cluster, resample.ratio = resample.ratio,
-                          max.itter = max.itter, clustering.method = clustering.method, adj.conv = adj.conv)
-    Scores = CC_cluster_count(CM)
-    ScoreList[["RobScore"]][i,] = Scores[["RobScore"]]
-    ScoreList[["LogitScore"]][i,] = Scores[["LogitScore"]]
-    ScoreList[["PAC"]][i,] = Scores[["PAC"]]
-    ScoreList[["deltaA"]][i,] = Scores[["deltaA"]]
-    ScoreList[["CMavg"]][i,] = Scores[["CMavg"]]
-  }
-
-  return(ScoreList)
-}
-
-## Calculate the null-model corrected score -------------------------------------------
-
-corrected_score = function(scores, null_model_scores, method = "log.ratio"){
-
-  MeanNull = apply(null_model_scores, 2, mean)
-  corrected_score =  abs(log10(scores + 1e-10) - log10(MeanNull + 1e-10))
-
-  return(corrected_score)
-
-}
-
-## Calculate the null-model p-values -------------------------------------------
-
-cluster_Pvalues = function(scores, null_model_scores){
-
-  n_total = nrow(null_model_scores)
-
-  p_val = rep(1, length(scores))
-  for (i in 1:length(scores)){
-    n_less = sum(scores[i] > null_model_scores[,i])
-    p_val[i] = (n_less + 1) / (n_total + 1)
-  }
-
-  return(p_val)
-}
-
-## Graph sampling with constant node degree
-SampelGraph_Degree = function(A){
-
-  EdgeWeight = matrix(A, length(A),1)
-  EdgeWeight = EdgeWeight[EdgeWeight>0]
-
-  Nnode = ncol(A)
-  Degree = apply(A, 1, sum)
-  As = A
-  for (i in 1:Nnode-1){
-    Weights = sample(EdgeWeight,Nnode-i)
-    Weights = Degree[i] * Weights / (sum(Weights) + sum(As[i,1:i]))
-    As[i,(i+1):Nnode] = Weights
-    As[,i] = As[i,]
-  }
-  return(As)
 }
