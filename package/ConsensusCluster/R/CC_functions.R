@@ -9,11 +9,11 @@
 #' @value list of consensus matrices for each k
 #'
 #' @details
-#' performs data perturbation consensus clustering
+#' performs data perturbation consensus clustering and obtain consensus matrix
 #' Monti et al. (2003) consensus clustering algorithm
 #'
 #' @examples
-#' # example code
+#' consensus_matrix(X)
 #'
 consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter = 100, clustering.method = "hclust",
                             no.cores = 1, adj.conv = TRUE){
@@ -77,16 +77,26 @@ consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter 
 }
 
 #' Calculate consensus matrix for multi-data consensus clustering
-
-
+#'
+#' @param X list of adjacency matrices for different cohorts (or views).
+#' @param max.cluster maximum number of clusters
+#' @param sample.set vector of samples the clustering is being applied on. \code{sample.set} can be names or indices.
+#' if \code{sample.set} is \code{NA}, it considers that all the datasets have the same samples with the same order.
+#' @param clustering.method base clustering method: \code{c("hclust", "spectral", "pam")}
+#' @param no.cores number of cores
+#' @param adj.conv binary value to apply soft threshold (default=\code{TRUE})
+#'
+#' @value list of consensus matrices for each k
+#'
+#' @details
+#' performs multi-data consensus clustering and obtain consensus matrix
+#' Monti et al. (2003) consensus clustering algorithm
+#'
+#' @examples
+#' # multiview_consensus_matrix()
+#'
 multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clustering.method = "hclust",
                                       no.cores = 1, adj.conv = TRUE){
-  ## Monti et al. (2003) consensus clustering algorithm
-  ## X is a list of different data (or view) each a Nsample x Nsample matrix
-  ## The output is the consensus matrix for each k
-  ## method: "hclust", "spectral", "pam"
-  ## sample.set: a set of samples the clustering is being applied on. can be names or indices
-  ## if sample.set is NA, we consider all the datasets have the same samples with the same order
 
   assertthat::assert_that(is.list(X))
   assertthat::assert_that(max.cluster>=2)
@@ -149,7 +159,23 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
 }
 
 #' Count the number of clusters based on stability score.
-
+#'
+#' @param CM list of consensus matrices each for a specific number of clusters.
+#' It can be the output of \code{consensus_matrix()} and \code{multiview_consensus_matrix()} functions.
+#' @param plot.cdf binary value to plot the cumulative distribution functions of \code{CM}.
+#' @param plot.logit binary value to plot the logit model of cumulative distribution functions of \code{CM}.
+#'
+#' @value results as a list:
+#' \code{"LogitScore", "PAC", "deltaA", "CMavg"},
+#' \code{"Kopt_LogitScore", "Kopt_PAC", "Kopt_deltaA", "Kopt_CMavg"}
+#'
+#' @details
+#' Count the number of clusters given a list of consensus matrices each for a specific number of clusters.
+#' Using different methods: \code{"LogitScore", "PAC", "deltaA", "CMavg"}
+#'
+#' @examples
+#' # CC_cluster_count()
+#'
 CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
 
   Nsample = ncol(CM[[2]])
@@ -157,7 +183,6 @@ CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
 
   par(new=FALSE)
   A = rep(0,length(K))                       # Area under the CDF curve
-  RobScore = rep(0,length(K))
   LogitScore = rep(0,length(K))
   PAC = rep(0,length(K))
   CMavg = rep(0,length(K))
@@ -181,7 +206,6 @@ CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
 
     S_Window_L = sum(ConsDistr*dnorm(0:(Nbin-2),10,5))
     S_Window_H = sum(ConsDistr*dnorm(0:(Nbin-2),90,5))
-    RobScore[k] = (S_Window_L - 0) * (1 - S_Window_H) / (S_Window_H - S_Window_L)^2
 
     # logit score
     df = data.frame(x = seq(0.01, .99, length.out = length(ConsDistr)), y = ConsDistr)
@@ -238,12 +262,10 @@ CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
   }
 
   Result = list()
-  Result[["RobScore"]] = RobScore
   Result[["LogitScore"]] = LogitScore
   Result[["PAC"]] = PAC
   Result[["deltaA"]] = deltaA
   Result[["CMavg"]] = CMavg
-  Result[["Kopt_RobScore"]] = which.max(RobScore)
   Result[["Kopt_LogitScore"]] = Kopt_LogitScore
   Result[["Kopt_PAC"]] = which.min(PAC[-1]) + 1
   Result[["Kopt_deltaA"]] = which.max(deltaA)
