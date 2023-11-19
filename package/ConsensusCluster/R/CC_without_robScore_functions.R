@@ -133,7 +133,7 @@ multi_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE, met
 #' multi_cluster_gen(X)
 #'
 #'
-multi_cluster_gen(X, func, rep = 10, param, method = "random"){
+multi_cluster_gen = function(X, func, rep = 10, param, method = "random"){
 
   assertthat::assert_that(rep > 0)
   assertthat::assert_that(method %in% c("silhouette", "random"))
