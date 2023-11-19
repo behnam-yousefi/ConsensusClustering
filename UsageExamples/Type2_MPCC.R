@@ -1,52 +1,38 @@
 ## Robust Stratification Through Consensus Clustering (CC)
-## Type 1: Permutated CC (PCC): Different permutations of samples
-## Implementations of the PCC and compare to baselines
+## Type 2: Method perturbation CC (MPCC)
 
 rm(list = ls())
 setwd("~/Desktop/R_Root/ConsensusCluster/")
+library(ConsensusCluster)
 
-## Definitions
-library(cluster)
-source("R/cluster_gen_functions.R")
-source("R/CC_functions.R")
+## Data simulation
+dim  = 2
+data = gaussian_clusters(n = c(40,40,40), dim = dim, sd.max = .5, sd.noise = 0, r.range = c(1,2))
+X = data$X
+class = data$class
+plot(X[,1:2], pch = 20, col = class, cex = .5)
 
-## Data generation
-SDnoise = 1
-n = c(50, 50, 30)
-center = rbind(c(5, 5), c(1,1), c(5,-1))
-sigma = list(matrix(c(3, 1, 1, 2), nrow = 2),
-             matrix(c(1, 0, 0, 1), nrow = 2),
-             matrix(c(1, 0, 0, 1), nrow = 2))
+## Apply MPCC
 
-data = generateGaussianClusters(n = n, center = center, sigma =  sigma)
-plot(data[,1:2], pch = 20, col = data[,3], cex = .5)
+# 1) Generation mechanism: calculate different clusterings
+Clusters = multi_kmeans_gen(X, rep = 200, range.k = c(2,10), method = "random")
+# or
+Clusters = multi_pam_gen(X, rep = 200, range.k = c(2,10), method = "random")
 
-dim = ncol(center)
-N = sum(n)
-data[,1:dim] = data[,1:dim] + matrix(rnorm(N*dim, 0, SDnoise), N)
-plot(data[,1:2], pch = 20, col = data[,3], cex = .5)
-
-## PCC
-X = data[,1:dim]
-
-Clusters = multi_kmeans_gen(X, rep = 200, range.k = c(40,50), method = "random")
+# 2) Consensus mechanism
+# 2.1) Consensus mechanism using co-association matrix
 Adj = coCluster_matrix(Clusters)
 pheatmap::pheatmap(Adj)
 
-CM = consensus_matrix(Adj, max.cluster = 4, resample.ratio = 0.7, max.itter = 50, clustering.method = "hclust",
-                      is.similarity = TRUE, no.cores = 1, adj.conv = FALSE)
+# We can then use DPCC on the co-association matrix and count the number of clusters
+CM = consensus_matrix(Adj, max.cluster = 5, resample.ratio = 0.7, max.itter = 50, clustering.method = "hclust")
 
+# Calculate stability score and count the optimum number of clusters
 Scores = CC_cluster_count(CM)
-RobScore = Scores[["RobScore"]]
+RobScore = Scores[["LogitScore"]]
 plot(RobScore, pch = 20, type = "b", ylab = "robustness score", xlab = "number of clusters")
-pheatmap::pheatmap(CM[[3]])
 
-Kopt = Scores[["Kopt_RobScore"]]
+# 3) Perform the final clustering
+Kopt = Scores[["Kopt_LogitScore"]]
+pheatmap::pheatmap(CM[[Kopt]])
 
-clusters = HirClustFromAdjMat(CM[[2]], k = Kopt, alpha = 1, adj.conv = FALSE, method = "single")
-clusters = SpectClustFromAdjMat(Adj, k = Kopt, max.eig = Kopt, alpha = 1, adj.conv = FALSE)
-plot(X[,1:2], pch = 20, col = clusters, cex = .5)
-
-coClMat = coCluster_matrix(cbind(clusters, data[,3]))
-ACC = sum(coClMat==0) / (2*N)
-print(ACC)
