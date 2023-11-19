@@ -26,7 +26,9 @@ At each repeat, k is selected randomly or based on the best silhouette width fro
 Then clustering is applied and result is returned.
 }
 \examples{
-multi_cluster_gen(X)
+X = gaussian_clusters()$X
+cluster_func = function(X, k){return(stats::kmeans(X, k)$cluster)}
+Clusters = multi_cluster_gen(X, cluster_func, param = c(2,3))
 
 
 }

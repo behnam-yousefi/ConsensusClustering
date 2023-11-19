@@ -5,13 +5,14 @@
 #' @param n number of generated data points
 #' @param center data center of desired dimension
 #' @param sigma covariance matrix
-#' @param label data labels
+#' @param label cluster label
 #'
 #' @value
 #' Generated data points from Gaussian distribution with given parameters
 #'
 #' @examples
-#' generate_gaussian_data(10, center=c(0,0), sigma=diag(c(1,1)), label=rep(1,10))
+#' generate_gaussian_data(10, center=c(0,0), sigma=diag(c(1,1)), label=1)
+#'
 #'
 generate_gaussian_data = function(n, center=0, sigma=1, label=NA) {
   data = mvtnorm::rmvnorm(n, mean = center, sigma = sigma)

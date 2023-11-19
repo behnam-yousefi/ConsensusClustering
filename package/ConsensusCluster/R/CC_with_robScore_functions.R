@@ -19,7 +19,9 @@
 #' Monti et al. (2003) consensus clustering algorithm
 #'
 #' @examples
-#' consensus_matrix(X)
+#' X = gaussian_clusters()$X
+#' Adj = adj_mat(X, method = "euclidian")
+#' CM = consensus_matrix(Adj, max.cluster=3, max.itter=10)
 #'
 consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter = 100, clustering.method = "hclust",
                             no.cores = 1, adj.conv = TRUE){
@@ -47,18 +49,18 @@ consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter 
 
     pb = txtProgressBar(min = 0, max = max.itter, style = 3)
     for (i in 1 : max.itter){
-      setTxtProgressBar(pb, i)
+      utils::setTxtProgressBar(pb, i)
 
       RandInd = sample(Nsample, floor(resample.ratio*Nsample), replace = FALSE)
       X_i = X[RandInd,RandInd]
 
       ## Do clustering
       if (clustering.method == "hclust")
-        clusters = HirClustFromAdjMat(X_i, k = nClust, alpha = 1, adj.conv = adj.conv)
+        clusters = hir_clust_from_adj_mat(X_i, k = nClust, alpha = 1, adj.conv = adj.conv)
       else if (clustering.method == "spectral")
-        clusters = SpectClustFromAdjMat(X_i, k = nClust, max.eig = nClust, alpha = 1, adj.conv = adj.conv)
+        clusters = spect_clust_from_adj_mat(X_i, k = nClust, max.eig = nClust, alpha = 1, adj.conv = adj.conv)
       else if (clustering.method == "pam")
-        clusters = PamClustFromAdjMat(X_i, k = nClust, alpha = 1, adj.conv = adj.conv)
+        clusters = pam_clust_from_adj_mat(X_i, k = nClust, alpha = 1, adj.conv = adj.conv)
       else
         error("err")
       Clusters = rep(0,Nsample)
@@ -128,7 +130,7 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
 
     pb = txtProgressBar(min = 0, max = N_dataset, style = 3)
     for (i in 1 : N_dataset){
-      setTxtProgressBar(pb, i)
+      utils::setTxtProgressBar(pb, i)
 
       X_i = X[[i]]
       IntersectedSamples = intersect(sample.set, rownames(X_i))
@@ -136,11 +138,11 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
 
       ## Do clustering
       if (clustering.method == "hclust")
-        clusters = HirClustFromAdjMat(X_i, k = nClust, alpha = 1, adj.conv = adj.conv)
+        clusters = hir_clust_from_adj_mat(X_i, k = nClust, alpha = 1, adj.conv = adj.conv)
       else if (clustering.method == "spectral")
-        clusters = SpectClustFromAdjMat(X_i, k = nClust, max.eig = nClust, alpha = 1, adj.conv = adj.conv)
+        clusters = spect_clust_from_adj_mat(X_i, k = nClust, max.eig = nClust, alpha = 1, adj.conv = adj.conv)
       else if (clustering.method == "pam")
-        clusters = PamClustFromAdjMat(X_i, k = nClust, alpha = 1, adj.conv = adj.conv)
+        clusters = pam_clust_from_adj_mat(X_i, k = nClust, alpha = 1, adj.conv = adj.conv)
       else
         error("err")
       Clusters = rep(0,length(sample.set))
@@ -180,7 +182,10 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
 #' Using different methods: \code{"LogitScore", "PAC", "deltaA", "CMavg"}
 #'
 #' @examples
-#' # CC_cluster_count()
+#' X = gaussian_clusters()$X
+#' Adj = adj_mat(X, method = "euclidian")
+#' CM = consensus_matrix(Adj, max.cluster=3, max.itter=10)
+#' Result = CC_cluster_count(CM, plot.cdf=FALSE)
 #'
 CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
 

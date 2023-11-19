@@ -31,7 +31,7 @@ At each repeat, k is selected randomly or based on the best silhouette width fro
 Then PAM clustering is applied and result is returned.
 }
 \examples{
-multi_pam_gen(X)
-
+X = gaussian_clusters()$X
+Clusters = multi_pam_gen(X)
 
 }

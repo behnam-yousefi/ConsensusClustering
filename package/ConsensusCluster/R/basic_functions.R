@@ -165,8 +165,8 @@ spect_clust_from_adj_mat = function (adj.mat, k = 2, max.eig = 10, alpha = 1, ad
   else
     Aff = adj.mat
 
-  graph = graph_from_adjacency_matrix(Aff, mode="undirected", weighted=TRUE)
-  Lsym = as.matrix(laplacian_matrix(graph, normalized = TRUE))
+  graph = igraph::graph_from_adjacency_matrix(Aff, mode="undirected", weighted=TRUE)
+  Lsym = as.matrix(igraph::laplacian_matrix(graph, normalized = TRUE))
   Lsym[is.na(Lsym)] = 0
 
   PCA = prcomp(Lsym)
@@ -174,7 +174,7 @@ spect_clust_from_adj_mat = function (adj.mat, k = 2, max.eig = 10, alpha = 1, ad
   Eigenvectors = PCA$rotation[,ncol(Lsym):1]
 
   Eigenvectors = Eigenvectors[,1:max.eig]
-  clusters = kmeans(Eigenvectors, k)[["cluster"]]
+  clusters = stats::kmeans(Eigenvectors, k)[["cluster"]]
 
   if (do.plot)
     plot(Lambda[1:10], pch = 20, type = "b")
@@ -208,7 +208,7 @@ pam_clust_from_adj_mat = function (adj.mat, k = 2, alpha = 1, adj.conv = TRUE){
     Aff = adj.mat
 
   dists = as.dist(1-Aff)
-  clusters = pam(as.matrix(dists), k = k, diss = TRUE, cluster.only=TRUE)
+  clusters = cluster::pam(as.matrix(dists), k = k, diss = TRUE, cluster.only=TRUE)
 
   return(clusters)
 }
@@ -237,7 +237,7 @@ coCluster_matrix = function(X){
   for (cl in 1:Nmethod){
     M = M + connectivity_matrix(X[,cl])
     I = I + indicator_matrix(X[,cl])
-    setTxtProgressBar(pb, cl)
+    utils::setTxtProgressBar(pb, cl)
   }
   coClusterMatrix = M/I
   close(pb)

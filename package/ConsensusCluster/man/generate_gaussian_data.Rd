@@ -13,12 +13,13 @@ generate_gaussian_data(n, center = 0, sigma = 1, label = NA)
 
 \item{sigma}{covariance matrix}
 
-\item{label}{data labels}
+\item{label}{cluster label}
 }
 \description{
 Generate a set of data points from Gaussian distribution
 }
 \examples{
-generate_gaussian_data(10, center=c(0,0), sigma=diag(c(1,1)), label=rep(1,10))
+generate_gaussian_data(10, center=c(0,0), sigma=diag(c(1,1)), label=1)
+
 
 }

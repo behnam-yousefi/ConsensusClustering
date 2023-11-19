@@ -33,6 +33,8 @@ performs data perturbation consensus clustering and obtain consensus matrix
 Monti et al. (2003) consensus clustering algorithm
 }
 \examples{
-consensus_matrix(X)
+X = gaussian_clusters()$X
+Adj = adj_mat(X, method = "euclidian")
+CM = consensus_matrix(Adj, max.cluster=3, max.itter=10)
 
 }

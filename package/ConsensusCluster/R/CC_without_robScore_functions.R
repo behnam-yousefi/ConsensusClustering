@@ -19,8 +19,8 @@
 #' Then k-means clustering is applied and result is returned.
 #'
 #' @examples
-#' multi_kmeans_gen(X)
-#'
+#' X = gaussian_clusters()$X
+#' Clusters = multi_kmeans_gen(X)
 #'
 multi_kmeans_gen = function(X, rep = 10, range.k = c(2,5), method = "random"){
 
@@ -39,8 +39,8 @@ multi_kmeans_gen = function(X, rep = 10, range.k = c(2,5), method = "random"){
     if (method == "silhouette"){
       Sil = rep(0, Kmax)
       for (k in Kmin:Kmax){
-        clusters = kmeans(X, k)$cluster
-        sil = silhouette(clusters, distX)
+        clusters = stats::kmeans(X, k)$cluster
+        sil = cluster::silhouette(clusters, distX)
         Sil[k] = mean(sil[,"sil_width"])
       }
       Kopt = which.max(Sil)
@@ -52,8 +52,8 @@ multi_kmeans_gen = function(X, rep = 10, range.k = c(2,5), method = "random"){
     else
       error("err")
 
-    Clusters[,i] = kmeans(X, Kopt)$cluster
-    print(Kopt)
+    Clusters[,i] = stats::kmeans(X, Kopt)$cluster
+    # print(Kopt)
   }
 
   return(Clusters)
@@ -75,8 +75,8 @@ multi_kmeans_gen = function(X, rep = 10, range.k = c(2,5), method = "random"){
 #' Then PAM clustering is applied and result is returned.
 #'
 #' @examples
-#' multi_pam_gen(X)
-#'
+#' X = gaussian_clusters()$X
+#' Clusters = multi_pam_gen(X)
 #'
 multi_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE, method = "random"){
 
@@ -94,7 +94,7 @@ multi_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE, met
     if (method == "silhouette"){
       Sil = rep(0, Kmax)
       for (k in Kmin:Kmax){
-        pam_result = pam(X, k = k, diss = is.distance)
+        pam_result = cluster::pam(X, k = k, diss = is.distance)
         clusters = pam_result$clustering
         Sil[k] = pam_result$silinfo$avg.width
       }
@@ -107,8 +107,8 @@ multi_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE, met
     else
       error("err")
 
-    Clusters[,i] = pam(X, k = Kopt, diss = is.distance, cluster.only = TRUE)
-    print(Kopt)
+    Clusters[,i] = cluster::pam(X, k = Kopt, diss = is.distance, cluster.only = TRUE)
+    # print(Kopt)
   }
 
   return(Clusters)
@@ -130,7 +130,9 @@ multi_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE, met
 #' Then clustering is applied and result is returned.
 #'
 #' @examples
-#' multi_cluster_gen(X)
+#' X = gaussian_clusters()$X
+#' cluster_func = function(X, k){return(stats::kmeans(X, k)$cluster)}
+#' Clusters = multi_cluster_gen(X, cluster_func, param = c(2,3))
 #'
 #'
 multi_cluster_gen = function(X, func, rep = 10, param, method = "random"){
@@ -148,7 +150,7 @@ multi_cluster_gen = function(X, func, rep = 10, param, method = "random"){
       Sil = rep(0, length(param))
       for (k in param){
         clusters = func(X, k)
-        sil = silhouette(clusters, distX)
+        sil = cluster::silhouette(clusters, distX)
         Sil[k] = mean(sil[,"sil_width"])
       }
       Kopt = which.max(Sil)
@@ -160,8 +162,8 @@ multi_cluster_gen = function(X, func, rep = 10, param, method = "random"){
     else
       error("err")
 
-    Clusters[,i] = func(X, k)
-    print(Kopt)
+    Clusters[,i] = func(X, Kopt)
+    # print(Kopt)
   }
 
   return(Clusters)

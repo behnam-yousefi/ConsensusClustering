@@ -22,6 +22,9 @@ Count the number of clusters given a list of consensus matrices each for a speci
 Using different methods: \code{"LogitScore", "PAC", "deltaA", "CMavg"}
 }
 \examples{
-# CC_cluster_count()
+X = gaussian_clusters()$X
+Adj = adj_mat(X, method = "euclidian")
+CM = consensus_matrix(Adj, max.cluster=3, max.itter=10)
+Result = CC_cluster_count(CM, plot.cdf=FALSE)
 
 }
