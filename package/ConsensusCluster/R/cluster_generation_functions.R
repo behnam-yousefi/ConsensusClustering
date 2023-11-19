@@ -1,20 +1,5 @@
 ## Random data generation functions
 
-#' ??
-#'
-#' @param x x
-#' @param n n
-#' @value
-#' ???
-#' @examples
-#' divide_interval_int(10,3)
-#'
-divide_interval_int = function(x,n){
-  y = rep(floor(x/n), n-1)
-  y[n] = x - sum(y)
-  return(y)
-}
-
 #' Generate a set of data points from Gaussian distribution
 #'
 #' @param n number of generated data points
@@ -151,6 +136,12 @@ gaussian_mixture_clusters = function(n = c(50,50), dim = 2, sd.max = .1, sd.nois
 
   k = length(n)
   assertthat::assert_that(k>=2)
+
+  divide_interval_int = function(x,n){
+    y = rep(floor(x/n), n-1)
+    y[n] = x - sum(y)
+    return(y)
+  }
 
   # Calculate angles by dividing the circular in k equal parts
   # Calculate centers as points within a sphere of radius in [r.min, r.max]

@@ -29,7 +29,7 @@ plot(data[,1:2], pch = 20, col = data[,3], cex = .5)
 ## PCC
 X = data[,1:dim]
 
-Clusters = multi_kmeans(X, rep = 200, range.k = c(40,50), method = "random")
+Clusters = multi_kmeans_gen(X, rep = 200, range.k = c(40,50), method = "random")
 Adj = coCluster_matrix(Clusters)
 pheatmap::pheatmap(Adj)
 

@@ -1,3 +1,9 @@
+# Generation mechanisms with robustness score
+# Functions accept a range of hyperparameters (specifically number of clusters)
+# and choose the most optimum based on a robustness (stability) score.
+# The output, that is a consensus matrix for the best param, can then
+# be fed to a clustering function to obtain the final clustering.
+
 #' Calculate consensus matrix for data perturbation consensus clustering
 #'
 #' @param X adjacency matrix a Nsample x Nsample
