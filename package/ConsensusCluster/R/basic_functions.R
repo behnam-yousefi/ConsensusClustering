@@ -8,7 +8,7 @@
 #' @param method method for adjusting p-value (including methods on \code{p.adjust.methods}).
 #' If set to "none" (default), no adjustment will be performed.
 #'
-#' @value
+#' @return
 #' calculated adjacency matrix from the data matrix using the specified methods
 #'
 #' @examples
@@ -30,7 +30,7 @@ adj_mat = function(x, method = "euclidian"){
 #' Logit function
 #'
 #' @param x numerical scaler input
-#' @value Logit(x) = log(1*x/(1-x))
+#' @return Logit(x) = log(1*x/(1-x))
 #' @examples
 #' y = Logit(0.5)
 #'
@@ -43,7 +43,7 @@ Logit = function(x)
 #' @param clusters a vector of clusterings. Zero elements mean that the sample was absent
 #' during clustering
 #'
-#' @value Connectivity matrix
+#' @return Connectivity matrix
 #'
 #' @details
 #'  Connectivity matrix (M) is a binary matrix N-by-N
@@ -69,7 +69,7 @@ connectivity_matrix = function (clusters){
 #' @param clusters a vector of clusterings. Zero elements mean that the sample was absent
 #' during clustering
 #'
-#' @value Indicator matrix
+#' @return Indicator matrix
 #'
 #' @details
 #'  Indicator matrix (I) is a binary matrix N-by-N
@@ -113,7 +113,7 @@ adj_conv = function(adj.mat, alpha=1){
 #' @param alpha soft threshold (considered if \code{adj.conv = TRUE}) (default=1)
 #' @param adj.conv binary value to apply soft thresholding (default=TRUE)
 #'
-#' @value vector of clusters
+#' @return vector of clusters
 #'
 #' @details
 #' apply PAM (k-medoids) clustering on the adjacency matrix
@@ -146,7 +146,7 @@ hir_clust_from_adj_mat = function (adj.mat, k = 2, alpha = 1, adj.conv = TRUE, m
 #' @param alpha soft threshold (considered if \code{adj.conv = TRUE}) (default=1)
 #' @param adj.conv binary value to apply soft thresholding (default=TRUE)
 #'
-#' @value vector of clusters
+#' @return vector of clusters
 #'
 #' @details
 #' apply PAM (k-medoids) clustering on the adjacency matrix
@@ -188,7 +188,7 @@ spect_clust_from_adj_mat = function (adj.mat, k = 2, max.eig = 10, alpha = 1, ad
 #' @param alpha soft threshold (considered if \code{adj.conv = TRUE}) (default=1)
 #' @param adj.conv binary value to apply soft thresholding (default=TRUE)
 #'
-#' @value vector of clusters
+#' @return vector of clusters
 #'
 #' @details
 #' apply PAM (k-medoids) clustering on the adjacency matrix
@@ -219,7 +219,7 @@ pam_clust_from_adj_mat = function (adj.mat, k = 2, alpha = 1, adj.conv = TRUE){
 #' @param X clustering matrix of Nsamples x Nclusterings.
 #' Zero elements are are considered as unclustered samples
 #'
-#' @value The normalized matrix of Co-cluster frequency of any pairs of samples (Nsamples x Nsamples)
+#' @return The normalized matrix of Co-cluster frequency of any pairs of samples (Nsamples x Nsamples)
 #'
 #' @examples
 #' Clustering = cbind(c(1,1,1,2,2,2),

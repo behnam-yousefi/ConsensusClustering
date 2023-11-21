@@ -12,7 +12,7 @@
 #' @param max.itter maximum number of itterations at each \code{max.cluster}
 #' @param clustering.method base clustering method: \code{c("hclust", "spectral", "pam")}
 #'
-#' @value list of consensus matrices for each k
+#' @return list of consensus matrices for each k
 #'
 #' @details
 #' performs data perturbation consensus clustering and obtain consensus matrix
@@ -94,7 +94,7 @@ consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter 
 #' @param no.cores number of cores
 #' @param adj.conv binary value to apply soft threshold (default=\code{TRUE})
 #'
-#' @value list of consensus matrices for each k
+#' @return description list of consensus matrices for each k
 #'
 #' @details
 #' performs multi-data consensus clustering and obtain consensus matrix
@@ -173,7 +173,7 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
 #' @param plot.cdf binary value to plot the cumulative distribution functions of \code{CM}.
 #' @param plot.logit binary value to plot the logit model of cumulative distribution functions of \code{CM}.
 #'
-#' @value results as a list:
+#' @return results as a list:
 #' \code{"LogitScore", "PAC", "deltaA", "CMavg"},
 #' \code{"Kopt_LogitScore", "Kopt_PAC", "Kopt_deltaA", "Kopt_CMavg"}
 #'

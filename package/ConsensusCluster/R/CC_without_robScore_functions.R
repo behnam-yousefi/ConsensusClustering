@@ -12,7 +12,7 @@
 #' @param range.k vector of minimum and maximum values for k \code{c(min, max)}
 #' @param method method for the choice of k at each repeat \code{c("random", "silhouette")}
 #'
-#' @value matrix of clusterings Nsample x Nrepeat
+#' @return matrix of clusterings Nsample x Nrepeat
 #'
 #' @details
 #' At each repeat, k is selected randomly or based on the best silhouette width from a discrete uniform distribution between range.k[1] and range.k[2].
@@ -68,7 +68,7 @@ multi_kmeans_gen = function(X, rep = 10, range.k = c(2,5), method = "random"){
 #' @param is.distance binary balue indicating if the input \code{X} is distance
 #' @param method method for the choice of k at each repeat \code{c("random", "silhouette")}
 #'
-#' @value matrix of clusterings Nsample x Nrepeat
+#' @return matrix of clusterings Nsample x Nrepeat
 #'
 #' @details
 #' At each repeat, k is selected randomly or based on the best silhouette width from a discrete uniform distribution between range.k[1] and range.k[2].
@@ -123,7 +123,7 @@ multi_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE, met
 #' @param param vector of parameters
 #' @param method method for the choice of k at each repeat \code{c("random", "silhouette")}
 #'
-#' @value matrix of clusterings Nsample x Nrepeat
+#' @return matrix of clusterings Nsample x Nrepeat
 #'
 #' @details
 #' At each repeat, k is selected randomly or based on the best silhouette width from a discrete uniform distribution between range.k[1] and range.k[2].
@@ -179,7 +179,7 @@ multi_cluster_gen = function(X, func, rep = 10, param, method = "random"){
 #' @param range.k vector of minimum and maximum values for k \code{c(min, max)}
 #' @param method method for the choice of k at each repeat \code{c("random", "silhouette")}
 #'
-#' @value matrix of clusterings Nsample x (Nrepeat x Nviews)
+#' @return matrix of clusterings Nsample x (Nrepeat x Nviews)
 #'
 #' @details
 #' At each repeat, k is selected randomly or based on the best silhouette width from a discrete uniform distribution between range.k[1] and range.k[2].
@@ -220,7 +220,7 @@ multiview_kmeans_gen = function(X, rep = 10, range.k = c(2,5), method = "random"
 #' @param sample.set  vector of samples the clustering is being applied on. can be names or indices.
 #' if \code{sample.set} is \code{NA}, it considers all the datasets have the same samples with the same order
 #'
-#' @value matrix of clusterings Nsample x (Nrepeat x Nviews)
+#' @return matrix of clusterings Nsample x (Nrepeat x Nviews)
 #'
 #' @details
 #' At each repeat, k is selected randomly or based on the best silhouette width from a discrete uniform distribution between range.k[1] and range.k[2].
@@ -286,7 +286,7 @@ multiview_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE,
 #' @param sample.set  vector of samples the clustering is being applied on. can be names or indices.
 #' if \code{sample.set} is \code{NA}, it considers all the datasets have the same samples with the same order
 #'
-#' @value matrix of clusterings Nsample x (Nrepeat x Nviews)
+#' @return matrix of clusterings Nsample x (Nrepeat x Nviews)
 #'
 #' @details
 #' At each repeat, k is selected randomly or based on the best silhouette width from a discrete uniform distribution between range.k[1] and range.k[2].

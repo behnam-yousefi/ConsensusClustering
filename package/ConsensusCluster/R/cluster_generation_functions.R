@@ -7,7 +7,7 @@
 #' @param sigma covariance matrix
 #' @param label cluster label
 #'
-#' @value
+#' @return
 #' Generated data points from Gaussian distribution with given parameters
 #'
 #' @examples
@@ -30,7 +30,7 @@ generate_gaussian_data = function(n, center=0, sigma=1, label=NA) {
 #' @param sigma list of covariance matrices dim X dim.
 #' The length of sigma should be equal to the number of clusters.
 #'
-#' @value
+#' @return
 #' matrix of Nsamples x (dim + 1). The last column is cluster labels.
 #'
 #' @examples
@@ -67,7 +67,7 @@ gaussian_clusters_with_param = function(n, center, sigma){
 #' @param sd.noise standard deviation of the added noise
 #' @param r.range the range (min, max) of distance of cluster centers from the origin
 #'
-#' @value
+#' @return
 #' a list of data points (X) and cluster labels (class)
 #'
 #' @examples
@@ -122,7 +122,7 @@ gaussian_clusters = function(n = c(50,50), dim = 2, sd.max = .1, sd.noise = .01,
 #' @param mixture.range range (min, max) of the number of Gaussian-mixtures.
 #' @param mixture.sep scaler indicating the separability between the mixtures.
 #'
-#' @value
+#' @return
 #' a list of data points (X) and cluster labels (class)
 #'
 #' @examples
@@ -196,7 +196,7 @@ gaussian_mixture_clusters = function(n = c(50,50), dim = 2, sd.max = .1, sd.nois
 #' @param sd.noise standard deviation of the added noise
 #' @param hidden.r.range the range (min, max) of distance of cluster centers from the origin in the hidden space.
 #'
-#' @value
+#' @return
 #' a list of data points (X) and cluster labels (class)
 #'
 #' @examples
