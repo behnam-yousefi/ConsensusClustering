@@ -10,11 +10,11 @@ dim  = 2
 data = gaussian_clusters(n = c(40,40,40), dim = dim, sd.max = .5, sd.noise = 0, r.range = c(1,2))
 X = data$X
 class = data$class
-plot(X[,1:2], pch = 20, col = class, cex = .5)
+plot(X, pch = 20, col = class, cex = .5)
 
 ## Apply MPCC
 
-# 1) Generation mechanism: calculate different clusterings
+# 1) Generation mechanism: calculate different clustering
 Clusters = multi_kmeans_gen(X, rep = 200, range.k = c(2,10), method = "random")
 # or
 Clusters = multi_pam_gen(X, rep = 200, range.k = c(2,10), method = "random")

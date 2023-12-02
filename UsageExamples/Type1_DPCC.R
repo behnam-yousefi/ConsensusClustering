@@ -10,7 +10,7 @@ dim  = 2
 data = gaussian_clusters(n = c(40,40,40), dim = dim, sd.max = .5, sd.noise = 0, r.range = c(1,2))
 X = data$X
 class = data$class
-plot(X[,1:2], pch = 20, col = class, cex = .5)
+plot(X, pch = 20, col = class, cex = .5)
 
 ## Calculate the adjacency matrix (as the algorithm requires a similarity matrix)
 Adj = adj_mat(X, method = "euclidian")
