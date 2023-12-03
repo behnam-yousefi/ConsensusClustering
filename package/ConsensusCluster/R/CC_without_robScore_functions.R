@@ -285,7 +285,6 @@ multiview_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE,
 #' \code{cluster_func <- function(X, param)}
 #' @param rep number of repeats
 #' @param param vector of parameters
-#' @param method method for the choice of k at each repeat \code{c("random", "silhouette")}
 #' @param is.distance binary balue indicating if the input \code{X[i]} is distance
 #' @param sample.set  vector of samples the clustering is being applied on. can be names or indices.
 #' if \code{sample.set} is \code{NA}, it considers all the datasets have the same samples with the same order
@@ -300,10 +299,10 @@ multiview_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE,
 #' data = multiview_clusters (n = c(40,40,40), hidden.dim = 2, observed.dim = c(2,2,2),
 #' sd.max = .1, sd.noise = 0, hidden.r.range = c(.5,1))
 #' X_observation = data[["observation"]]
-#' cluster_func = function(X, k){return(stats::kmeans(X, k)$cluster)}
-#' Clusters = multiview_cluster_gen(X_observation, func = cluster_func)
+#' cluster_func = function(X, rep, param){return(multi_kmeans_gen(X, rep=rep, range.k=param, method="random"))}
+#' Clusters = multiview_cluster_gen(X_observation, func = cluster_func, rep = 10, param = c(2,4))
 #'
-multiview_cluster_gen = function(X, func, rep = 10, param, method = "random", is.distance = FALSE, sample.set = NA){
+multiview_cluster_gen = function(X, func, rep = 10, param, is.distance = FALSE, sample.set = NA){
 
   assertthat::assert_that(is.list(X))
 
@@ -326,7 +325,7 @@ multiview_cluster_gen = function(X, func, rep = 10, param, method = "random", is
         X_i = X_i[,IntersectedSamples]
 
       for (r in 1:rep){
-        cl = multi_cluster_gen(X_i, rep = 1, param = param, method = method)
+        cl = func(X_i, rep = 1, param=param)
         names(cl) = IntersectedSamples
         clusters = rep(0, length(sample.set))
         names(clusters) = sample.set
@@ -335,7 +334,7 @@ multiview_cluster_gen = function(X, func, rep = 10, param, method = "random", is
       }
 
     }else{
-      cl = multi_cluster_gen(X_i, rep = 1, param = param, method = method)
+      cl = func(X_i, rep = rep, param=param)
       Clusters = cbind(Clusters, cl)
     }
   }

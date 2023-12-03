@@ -20,6 +20,8 @@ hir_clust_from_adj_mat(
 \item{alpha}{soft threshold (considered if \code{adj.conv = TRUE}) (default=1)}
 
 \item{adj.conv}{binary value to apply soft thresholding (default=TRUE)}
+
+\item{method}{distance meethod (default: /code{ward.D})}
 }
 \value{
 vector of clusters

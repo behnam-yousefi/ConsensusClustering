@@ -53,7 +53,7 @@ Logit = function(x)
 #'  Class Discovery and Visualization of Gene Expression Microarray Data", Machine Learning
 #'
 #' @examples
-#' connectivity_mat([1,1,1,2,2,2])
+#' con_mat = connectivity_matrix(c(1,1,1,2,2,2))
 #'
 connectivity_matrix = function (clusters){
   Nsample = length(clusters)
@@ -77,6 +77,9 @@ connectivity_matrix = function (clusters){
 #'  I[i,j] = 1 if sample i and j co-exist for clustering
 #'  ref: Monti et al. (2003) "Consensus Clustering: A Resampling-Based Method for
 #'  Class Discovery and Visualization of Gene Expression Microarray Data", Machine Learning
+#'
+#' @examples
+#' ind_mat = indicator_matrix(c(1,1,1,0,0,1))
 #'
 indicator_matrix = function (clusters){
   Nsample = length(clusters)
@@ -113,6 +116,7 @@ adj_conv = function(adj.mat, alpha=1){
 #' @param k number of clusters (default=2)
 #' @param alpha soft threshold (considered if \code{adj.conv = TRUE}) (default=1)
 #' @param adj.conv binary value to apply soft thresholding (default=TRUE)
+#' @param method distance meethod (default: /code{ward.D})
 #'
 #' @return vector of clusters
 #'
@@ -144,8 +148,10 @@ hir_clust_from_adj_mat = function (adj.mat, k = 2, alpha = 1, adj.conv = TRUE, m
 #'
 #' @param adj.mat adjacency matrix
 #' @param k number of clusters (default=2)
-#' @param alpha soft threshold (considered if \code{adj.conv = TRUE}) (default=1)
-#' @param adj.conv binary value to apply soft thresholding (default=TRUE)
+#' @param max.eig maximum number of eigenvectors in use (dafaut = 10).
+#' @param alpha soft threshold (considered if \code{adj.conv = TRUE}) (default = 1)
+#' @param adj.conv binary value to apply soft thresholding (default = \code{TRUE})
+#' @param do.plot binary value to do plot (dafaut = \code{FALSE})
 #'
 #' @return vector of clusters
 #'

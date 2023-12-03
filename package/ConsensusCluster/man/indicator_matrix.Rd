@@ -22,3 +22,7 @@ Indicator matrix (I) is a binary matrix N-by-N
  ref: Monti et al. (2003) "Consensus Clustering: A Resampling-Based Method for
  Class Discovery and Visualization of Gene Expression Microarray Data", Machine Learning
 }
+\examples{
+ind_mat = indicator_matrix(c(1,1,1,0,0,1))
+
+}

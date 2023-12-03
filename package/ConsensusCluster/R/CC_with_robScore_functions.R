@@ -32,7 +32,6 @@ consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter 
   assertthat::assert_that(max.cluster>2)
   assertthat::assert_that(resample.ratio>0 & resample.ratio<1)
   assertthat::assert_that(max.itter>0)
-  assertthat::assert_that(no.cores>0)
 
   Nsample = nrow(X)
   CM = list()      # List of consensus matrices
@@ -52,7 +51,7 @@ consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter 
     I = M
 
     if (verbos)
-      pb = txtProgressBar(min = 0, max = max.itter, style = 3)
+      pb = utils::txtProgressBar(min = 0, max = max.itter, style = 3)
     for (i in 1 : max.itter){
 
       if (verbos)
@@ -100,7 +99,6 @@ consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter 
 #' @param sample.set vector of samples the clustering is being applied on. \code{sample.set} can be names or indices.
 #' if \code{sample.set} is \code{NA}, it considers that all the datasets have the same samples with the same order.
 #' @param clustering.method base clustering method: \code{c("hclust", "spectral", "pam")}
-#' @param no.cores number of cores
 #' @param adj.conv binary value to apply soft threshold (default=\code{TRUE})
 #' @param verbos binary value for verbosity (default=\code{TRUE})
 #'
@@ -124,7 +122,6 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
 
   assertthat::assert_that(is.list(X))
   assertthat::assert_that(max.cluster>=2)
-  assertthat::assert_that(no.cores>0)
 
   if (is.na(sample.set)[1])
     sample.set = 1:ncol(X[[1]])
@@ -144,9 +141,12 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
     ## Indicator matrix
     I = M
 
-    pb = txtProgressBar(min = 0, max = N_dataset, style = 3)
+    if (verbos)
+      pb = utils::txtProgressBar(min = 0, max = N_dataset, style = 3)
     for (i in 1 : N_dataset){
-      utils::setTxtProgressBar(pb, i)
+
+      if (verbos)
+        utils::setTxtProgressBar(pb, i)
 
       X_i = X[[i]]
       IntersectedSamples = intersect(sample.set, rownames(X_i))
@@ -172,7 +172,9 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
       Ii = indicator_matrix(Clusters)
       I = I + Ii
     }
-    close(pb)
+
+    if (verbos)
+      close(pb)
 
     CM[[nClust]] = M/I
     rownames(CM[[nClust]]) = rownames(X)

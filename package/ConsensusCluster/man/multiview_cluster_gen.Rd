@@ -9,7 +9,6 @@ multiview_cluster_gen(
   func,
   rep = 10,
   param,
-  method = "random",
   is.distance = FALSE,
   sample.set = NA
 )
@@ -24,8 +23,6 @@ The length of \code{X} is equal to Nviews}
 \item{rep}{number of repeats}
 
 \item{param}{vector of parameters}
-
-\item{method}{method for the choice of k at each repeat \code{c("random", "silhouette")}}
 
 \item{is.distance}{binary balue indicating if the input \code{X[i]} is distance}
 
@@ -46,7 +43,7 @@ Then clustering is applied and result is returned.
 data = multiview_clusters (n = c(40,40,40), hidden.dim = 2, observed.dim = c(2,2,2),
 sd.max = .1, sd.noise = 0, hidden.r.range = c(.5,1))
 X_observation = data[["observation"]]
-cluster_func = function(X, k){return(stats::kmeans(X, k)$cluster)}
-Clusters = multiview_cluster_gen(X_observation, func = cluster_func)
+cluster_func = function(X, rep, param){return(multi_kmeans_gen(X, rep=rep, range.k=param, method="random"))}
+Clusters = multiview_cluster_gen(X_observation, func = cluster_func, rep = 10, param = c(2,4))
 
 }

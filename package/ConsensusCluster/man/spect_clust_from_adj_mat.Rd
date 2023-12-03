@@ -18,9 +18,13 @@ spect_clust_from_adj_mat(
 
 \item{k}{number of clusters (default=2)}
 
-\item{alpha}{soft threshold (considered if \code{adj.conv = TRUE}) (default=1)}
+\item{max.eig}{maximum number of eigenvectors in use (dafaut = 10).}
 
-\item{adj.conv}{binary value to apply soft thresholding (default=TRUE)}
+\item{alpha}{soft threshold (considered if \code{adj.conv = TRUE}) (default = 1)}
+
+\item{adj.conv}{binary value to apply soft thresholding (default = \code{TRUE})}
+
+\item{do.plot}{binary value to do plot (dafaut = \code{FALSE})}
 }
 \value{
 vector of clusters

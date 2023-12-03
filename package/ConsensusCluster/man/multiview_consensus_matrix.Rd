@@ -26,8 +26,6 @@ if \code{sample.set} is \code{NA}, it considers that all the datasets have the s
 \item{adj.conv}{binary value to apply soft threshold (default=\code{TRUE})}
 
 \item{verbos}{binary value for verbosity (default=\code{TRUE})}
-
-\item{no.cores}{number of cores}
 }
 \value{
 description list of consensus matrices for each k
