@@ -1,4 +1,4 @@
-Package: ConsensusCluster
+Package: ConsensusClustering
 Type: Package
 Title: Consensus Clustering
 Version: 1.1.0
