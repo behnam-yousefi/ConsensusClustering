@@ -26,7 +26,7 @@ multi_kmeans_gen = function(X, rep = 10, range.k = c(2,5), method = "random"){
 
   assertthat::assert_that(rep > 0)
   assertthat::assert_that(range.k[1] > 1)
-  assertthat::assert_that(range.k[2] >= range.k[1])
+  assertthat::assert_that(range.k[2] > range.k[1])
   assertthat::assert_that(method %in% c("silhouette", "random"))
 
   Kmin = range.k[1]
@@ -82,7 +82,7 @@ multi_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE, met
 
   assertthat::assert_that(rep > 0)
   assertthat::assert_that(range.k[1] > 1)
-  assertthat::assert_that(range.k[2] >= range.k[1])
+  assertthat::assert_that(range.k[2] > range.k[1])
   assertthat::assert_that(method %in% c("silhouette", "random"))
 
   Kmin = range.k[1]
@@ -195,7 +195,7 @@ multiview_kmeans_gen = function(X, rep = 10, range.k = c(2,5), method = "random"
 
   assertthat::assert_that(is.list(X))
   assertthat::assert_that(range.k[1] > 1)
-  assertthat::assert_that(range.k[2] >= range.k[1])
+  assertthat::assert_that(range.k[2] > range.k[1])
 
   Kmin = range.k[1]
   Kmax = range.k[2]
@@ -238,7 +238,7 @@ multiview_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE,
 
   assertthat::assert_that(is.list(X))
   assertthat::assert_that(range.k[1] > 1)
-  assertthat::assert_that(range.k[2] >= range.k[1])
+  assertthat::assert_that(range.k[2] > range.k[1])
 
   if (!is.na(sample.set)[1] & is.null(colnames(X[[1]])))
     stop("err")

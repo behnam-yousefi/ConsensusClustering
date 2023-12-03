@@ -2,7 +2,7 @@
 % Please edit documentation in R/basic_functions.R
 \name{coCluster_matrix}
 \alias{coCluster_matrix}
-\title{Calculate the  Co-cluster matrix for a set of given set of clustering results.}
+\title{Calculate the Co-cluster matrix for a given set of clustering results.}
 \usage{
 coCluster_matrix(X, verbos = TRUE)
 }
@@ -16,7 +16,10 @@ Zero elements are are considered as unclustered samples}
 The normalized matrix of Co-cluster frequency of any pairs of samples (Nsamples x Nsamples)
 }
 \description{
-Calculate the  Co-cluster matrix for a set of given set of clustering results.
+Calculate the Co-cluster matrix for a given set of clustering results.
+}
+\details{
+Co-cluster matrix or consensus matrix (CM) is a method for consensus mechanism explaned in Monti et al. (2003).
 }
 \examples{
 Clustering = cbind(c(1,1,1,2,2,2),
