@@ -43,7 +43,7 @@ Then clustering is applied and result is returned.
 data = multiview_clusters (n = c(40,40,40), hidden.dim = 2, observed.dim = c(2,2,2),
 sd.max = .1, sd.noise = 0, hidden.r.range = c(.5,1))
 X_observation = data[["observation"]]
-cluster_func = function(X, rep, param){return(multi_kmeans_gen(X, rep=rep, range.k=param, method="random"))}
+cluster_func = function(X,rep,param){return(multi_kmeans_gen(X,rep=rep,range.k=param))}
 Clusters = multiview_cluster_gen(X_observation, func = cluster_func, rep = 10, param = c(2,4))
 
 }

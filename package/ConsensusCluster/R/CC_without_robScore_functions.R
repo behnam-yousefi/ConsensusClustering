@@ -31,7 +31,7 @@ multi_kmeans_gen = function(X, rep = 10, range.k = c(2,5), method = "random"){
 
   Kmin = range.k[1]
   Kmax = range.k[2]
-  distX = dist(X)
+  distX = stats::dist(X)
 
   Clusters = matrix(0, nrow(X), rep)
   for (i in 1:rep){
@@ -140,7 +140,7 @@ multi_cluster_gen = function(X, func, rep = 10, param, method = "random"){
   assertthat::assert_that(rep > 0)
   assertthat::assert_that(method %in% c("silhouette", "random"))
 
-  distX = dist(X)
+  distX = stats::dist(X)
 
   Clusters = matrix(0, nrow(X), rep)
   for (i in 1:rep){
@@ -299,7 +299,7 @@ multiview_pam_gen = function(X, rep = 10, range.k = c(2,5), is.distance = FALSE,
 #' data = multiview_clusters (n = c(40,40,40), hidden.dim = 2, observed.dim = c(2,2,2),
 #' sd.max = .1, sd.noise = 0, hidden.r.range = c(.5,1))
 #' X_observation = data[["observation"]]
-#' cluster_func = function(X, rep, param){return(multi_kmeans_gen(X, rep=rep, range.k=param, method="random"))}
+#' cluster_func = function(X,rep,param){return(multi_kmeans_gen(X,rep=rep,range.k=param))}
 #' Clusters = multiview_cluster_gen(X_observation, func = cluster_func, rep = 10, param = c(2,4))
 #'
 multiview_cluster_gen = function(X, func, rep = 10, param, is.distance = FALSE, sample.set = NA){

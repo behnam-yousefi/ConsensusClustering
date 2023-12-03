@@ -22,7 +22,7 @@ adj_mat = function(X, method = "euclidian"){
     X = X / apply(X, 1, function(x){sqrt(sum(x^2))})
     AdjMat = X %*% t(X)
   }else{
-    dists = as.matrix(dist(X, method))
+    dists = as.matrix(stats::dist(X, method))
     AdjMat = (max(dists) - dists)/max(dists)
   }
   return(AdjMat)
@@ -137,9 +137,9 @@ hir_clust_from_adj_mat = function (adj.mat, k = 2, alpha = 1, adj.conv = TRUE, m
   else
     Aff = adj.mat
 
-  dists = as.dist(1-Aff)
-  Tree = hclust(dists, method=method)
-  clusters = cutree(Tree, k=k)
+  dists = stats::as.dist(1-Aff)
+  Tree = stats::hclust(dists, method=method)
+  clusters = stats::cutree(Tree, k=k)
 
   return(clusters)
 }
@@ -176,7 +176,7 @@ spect_clust_from_adj_mat = function (adj.mat, k = 2, max.eig = 10, alpha = 1, ad
   Lsym = as.matrix(igraph::laplacian_matrix(graph, normalized = TRUE))
   Lsym[is.na(Lsym)] = 0
 
-  PCA = prcomp(Lsym)
+  PCA = stats::prcomp(Lsym)
   Lambda = PCA$sdev[ncol(Lsym):1]
   Eigenvectors = PCA$rotation[,ncol(Lsym):1]
 
@@ -214,7 +214,7 @@ pam_clust_from_adj_mat = function (adj.mat, k = 2, alpha = 1, adj.conv = TRUE){
   else
     Aff = adj.mat
 
-  dists = as.dist(1-Aff)
+  dists = stats::as.dist(1-Aff)
   clusters = cluster::pam(as.matrix(dists), k = k, diss = TRUE, cluster.only=TRUE)
 
   return(clusters)
@@ -225,29 +225,36 @@ pam_clust_from_adj_mat = function (adj.mat, k = 2, alpha = 1, adj.conv = TRUE){
 #'
 #' @param X clustering matrix of Nsamples x Nclusterings.
 #' Zero elements are are considered as unclustered samples
+#' @param verbos binary value for verbosity (default = \code{TRUE})
 #'
 #' @return The normalized matrix of Co-cluster frequency of any pairs of samples (Nsamples x Nsamples)
 #'
 #' @examples
 #' Clustering = cbind(c(1,1,1,2,2,2),
 #'                    c(1,1,2,1,2,2))
-#' coCluster_matrix(Clustering)
+#' coCluster_matrix(Clustering, verbos = FALSE)
 #'
-coCluster_matrix = function(X){
+coCluster_matrix = function(X, verbos = TRUE){
   Nsample = nrow(X)
   Nmethod = ncol(X)
 
   M = matrix(0,Nsample,Nsample)
   I = M
-  pb = txtProgressBar(min = 0, max = Nmethod, style = 3)
+
+  if (verbos)
+    pb = utils::txtProgressBar(min = 0, max = Nmethod, style = 3)
 
   for (cl in 1:Nmethod){
     M = M + connectivity_matrix(X[,cl])
     I = I + indicator_matrix(X[,cl])
-    utils::setTxtProgressBar(pb, cl)
+
+    if (verbos)
+      utils::setTxtProgressBar(pb, cl)
   }
   coClusterMatrix = M/I
-  close(pb)
+
+  if (verbos)
+    close(pb)
 
   rownames(coClusterMatrix) = rownames(X)
   colnames(coClusterMatrix) = rownames(X)

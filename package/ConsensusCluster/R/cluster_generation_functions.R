@@ -85,7 +85,7 @@ gaussian_clusters = function(n = c(50,50), dim = 2, sd.max = .1, sd.noise = .01,
   # Calculate angles by dividing the circule in k equal parts
   # Calculate centers as points within a sphere of radius in [r.min, r.max]
   Angle = seq(0,2*pi,2*pi/k)[1:k]
-  Radius = runif(k, r.range[1], r.range[2])
+  Radius = stats::runif(k, r.range[1], r.range[2])
 
   Centers = matrix(0, k, dim)
   Sigma = list()
@@ -98,14 +98,14 @@ gaussian_clusters = function(n = c(50,50), dim = 2, sd.max = .1, sd.noise = .01,
     Centers[i,dim] = r * cos(theta)^(dim-1)
 
     # Set random covariance matrices
-    sigma = matrix(runif(dim*dim, -sd.max/10, sd.max/10), dim)
+    sigma = matrix(stats::runif(dim*dim, -sd.max/10, sd.max/10), dim)
     sigma[lower.tri(sigma)] = t(sigma)[lower.tri(sigma)]
-    diag(sigma) = runif(dim, sd.max/10, sd.max)
+    diag(sigma) = stats::runif(dim, sd.max/10, sd.max)
     Sigma[[i]] = sigma
   }
 
   data = gaussian_clusters_with_param(n = n, center = Centers, sigma =  Sigma)
-  data[,1:dim] = data[,1:dim] + matrix(rnorm(sum(n)*dim, 0, sd.noise), sum(n))
+  data[,1:dim] = data[,1:dim] + matrix(stats::rnorm(sum(n)*dim, 0, sd.noise), sum(n))
 
   data = list(X = data[, 1:dim], class = data[, dim+1])
   return(data)
@@ -147,7 +147,7 @@ gaussian_mixture_clusters = function(n = c(50,50), dim = 2, sd.max = .1, sd.nois
   # Calculate angles by dividing the circular in k equal parts
   # Calculate centers as points within a sphere of radius in [r.min, r.max]
   Angle = seq(0,2*pi,2*pi/k)[1:k]
-  Radius = runif(k, r.range[1], r.range[2])
+  Radius = stats::runif(k, r.range[1], r.range[2])
   Nmixture = sample(mixture.range[1]:mixture.range[2], k, replace = TRUE)
 
   data = c()
@@ -164,12 +164,12 @@ gaussian_mixture_clusters = function(n = c(50,50), dim = 2, sd.max = .1, sd.nois
 
     for (m in 1:Nmixture[i]){
       if (m>1)
-        Centers[m,] = Centers[1,] + matrix(runif(dim, -mixture.sep*sd.max, mixture.sep*sd.max),1)
+        Centers[m,] = Centers[1,] + matrix(stats::runif(dim, -mixture.sep*sd.max, mixture.sep*sd.max),1)
 
       # Set random covariance matrices
-      sigma = matrix(runif(dim*dim, -sd.max/2, sd.max/2), dim)
+      sigma = matrix(stats::runif(dim*dim, -sd.max/2, sd.max/2), dim)
       sigma[lower.tri(sigma)] = t(sigma)[lower.tri(sigma)]
-      diag(sigma) = runif(dim, sd.max/2, sd.max)
+      diag(sigma) = stats::runif(dim, sd.max/2, sd.max)
       Sigma[[m]] = sigma / m
     }
 
@@ -179,7 +179,7 @@ gaussian_mixture_clusters = function(n = c(50,50), dim = 2, sd.max = .1, sd.nois
     class = c(class, rep(i,n[i]))
   }
 
-  data[,1:dim] = data[,1:dim] + matrix(rnorm(sum(n)*dim, 0, sd.noise), sum(n))
+  data[,1:dim] = data[,1:dim] + matrix(stats::rnorm(sum(n)*dim, 0, sd.noise), sum(n))
 
   data = list(X = data, class = class)
   return(data)
@@ -220,10 +220,10 @@ multiview_clusters = function (n = c(50,50), hidden.dim = 2, observed.dim = c(2,
   for (i in 1:Nobservation){
     dim_i = observed.dim[i]
     X = matrix(0, N, dim_i)
-    W = matrix(runif(hidden.dim*dim_i, .1,1), hidden.dim)
+    W = matrix(stats::runif(hidden.dim*dim_i, .1,1), hidden.dim)
     for (d in 1:dim_i){
       X = hiddenState %*% W
-      X = X + matrix(rnorm(N*dim_i, 0, sd.noise), N)
+      X = X + matrix(stats::rnorm(N*dim_i, 0, sd.noise), N)
     }
     data_list[[i]] = X
   }

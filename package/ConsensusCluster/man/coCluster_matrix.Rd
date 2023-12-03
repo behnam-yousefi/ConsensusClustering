@@ -4,11 +4,13 @@
 \alias{coCluster_matrix}
 \title{Calculate the  Co-cluster matrix for a set of given set of clustering results.}
 \usage{
-coCluster_matrix(X)
+coCluster_matrix(X, verbos = TRUE)
 }
 \arguments{
 \item{X}{clustering matrix of Nsamples x Nclusterings.
 Zero elements are are considered as unclustered samples}
+
+\item{verbos}{binary value for verbosity (default = \code{TRUE})}
 }
 \value{
 The normalized matrix of Co-cluster frequency of any pairs of samples (Nsamples x Nsamples)
@@ -19,6 +21,6 @@ Calculate the  Co-cluster matrix for a set of given set of clustering results.
 \examples{
 Clustering = cbind(c(1,1,1,2,2,2),
                    c(1,1,2,1,2,2))
-coCluster_matrix(Clustering)
+coCluster_matrix(Clustering, verbos = FALSE)
 
 }

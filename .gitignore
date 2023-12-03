@@ -3,3 +3,4 @@
 *.RDS
 .Rproj.user
 *.tar.gz
+*.Rcheck
