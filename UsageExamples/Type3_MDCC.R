@@ -35,7 +35,7 @@ K_opt = Scores[["Kopt_LogitScore"]]
 print(K_opt)
 
 
-# Method 2) NDCC based on MPCC: perform MPCC on each view and then aggregate.
+# Method 2) MDCC based on MPCC: perform MPCC on each view and then aggregate.
 
 Clusters = multiview_kmeans_gen(X_observation, rep = 100, range.k = c(5,20), method = "random")
 Clusters = multiview_pam_gen(X_observation, rep = 100, range.k = c(5,20), method = "random")
