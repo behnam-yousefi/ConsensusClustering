@@ -1,12 +1,12 @@
 Package: ConsensusClustering
 Type: Package
 Title: Consensus Clustering
-Version: 1.1.0
+Version: 1.1.1
 Authors@R: c(person("Behnam", "Yousefi", role = c("aut", "cre","cph"),
             email = "yousefi.bme@gmail.com"))
 Description: This package is an extension to clustering algorithms that aims to construct a robust result from those clustering features that are invariant under the above sources of variation. As part of CC, stability scores can provide an idea of the degree of reliability of the resulting clustering.
     We provide an R package to implement a wide range of CC methods, with different generation and consensus mechanisms. For the reference, please cite
-    Yousefi et al. (2023) <doi:10.1101/2023.01.22.525058>.
+    Yousefi et al. (2023) <https://doi.org/10.3389/fmicb.2023.1170391>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
