@@ -116,7 +116,7 @@ adj_conv = function(adj.mat, alpha=1){
 #' @param k number of clusters (default=2)
 #' @param alpha soft threshold (considered if \code{adj.conv = TRUE}) (default=1)
 #' @param adj.conv binary value to apply soft thresholding (default=TRUE)
-#' @param method distance meethod (default: /code{ward.D})
+#' @param method distance method (default: \code{ward.D})
 #'
 #' @return vector of clusters
 #'
