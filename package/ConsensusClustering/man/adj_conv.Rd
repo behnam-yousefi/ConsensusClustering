@@ -11,6 +11,9 @@ adj_conv(adj.mat, alpha = 1)
 
 \item{alpha}{soft threshold value (see details).}
 }
+\value{
+the matrix if affinity values.
+}
 \description{
 Convert adjacency function to the affinity matrix
 }

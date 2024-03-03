@@ -212,7 +212,7 @@ CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
   Nsample = ncol(CM[[2]])
   K = 2:(length(CM))
 
-  graphics::par(new=FALSE)
+  # graphics::par(new=FALSE)
   A = rep(0,length(K))                       # Area under the CDF curve
   LogitScore = rep(0,length(K))
   PAC = rep(0,length(K))
@@ -253,10 +253,16 @@ CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
       # ConsDistr = c(0, ConsDistr, 1)
       plt = ConsDistr
       index_value = seq(0, 1, length.out = length(ConsDistr))
-      plot(index_value,ConsDistr, type='l', col=k, ylim = c(0,1), lwd = 3,
-           ylab = "CDF", xlab = "consensus index value")
+
+      if (k==2)
+        plot(index_value, ConsDistr, type='l', col=k, ylim = c(0,1), lwd = 3,
+             ylab = "CDF", xlab = "consensus index value")
+      else
+        graphics::lines(index_value, ConsDistr, col=k, ylim = c(0,1), lwd = 3,
+                        ylab = "CDF", xlab = "consensus index value")
+
       graphics::text(k/10, plt[10*k], labels = k)
-      graphics::par(new=TRUE)
+      # graphics::par(new=TRUE)
     }
 
     if (plot.logit){
@@ -265,15 +271,19 @@ CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
       y = a_hat * Logit(x) + b_hat
       #x = c(0, x, 1)
       #y = c(0, y, 1)
-      plot(x, y, type='l', col=k, ylim = c(0,1), lwd = 3,
-           ylab = "simulated CDF", xlab = "consensus index value")
+      if (k==2)
+        plot(x, y, type='l', col=k, ylim = c(0,1), lwd = 3,
+             ylab = "simulated CDF", xlab = "consensus index value")
+      else
+        graphics::lines(x, y, col=k, ylim = c(0,1), lwd = 3,
+                        ylab = "simulated CDF", xlab = "consensus index value")
       graphics::text(k/10, ConsDistr[10*k], labels = k)
-      graphics::par(new=TRUE)
+      # graphics::par(new=TRUE)
     }
 
   }
 
-  graphics::par(new=FALSE)
+  # graphics::par(new=FALSE)
 
   deltaA = A
   for (k in 3:max(K))
