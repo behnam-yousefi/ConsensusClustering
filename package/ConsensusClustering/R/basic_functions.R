@@ -95,6 +95,8 @@ indicator_matrix = function (clusters){
 #' @param adj.mat Adjacency matrix. The elements must be within [-1, 1].
 #' @param alpha soft threshold value (see details).
 #'
+#' @return the matrix if affinity values.
+#'
 #' @details
 #' adj = exp(-(1-adj)^2/(2*alpha^2))
 #' ref: Luxburg (2007), "A tutorial on spectral clustering", Stat Comput

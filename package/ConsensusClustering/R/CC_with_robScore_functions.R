@@ -129,10 +129,12 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
   N_dataset = length(X)
   CM = list()      # List of consensus matrices
 
-  print("Algorithm Starts...!")
+  if (verbos)
+    print("Algorithm Starts...!")
   for (nClust in 2:max.cluster) {                          # Loop for K
 
-    print(paste0("Number of clusters: ", nClust))
+    if (verbos)
+      print(paste0("Number of clusters: ", nClust))
 
     ## Connectivity matrix
     M = matrix(0,length(sample.set),length(sample.set))
