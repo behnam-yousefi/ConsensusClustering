@@ -2,7 +2,6 @@
 ## Type 2: Method perturbation CC (MPCC)
 
 rm(list = ls())
-setwd("~/Desktop/R_Root/ConsensusClustering/")
 library(ConsensusClustering)
 
 ## Data simulation

@@ -2,7 +2,6 @@
 ## Type 1: Data perturbation CC (DPCC)
 
 rm(list = ls())
-setwd("~/Desktop/R_Root/ConsensusClustering/")
 library(ConsensusClustering)
 
 ## Data simulation

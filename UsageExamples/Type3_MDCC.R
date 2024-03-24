@@ -2,7 +2,6 @@
 ## Type 3: Meta-data CC (MDCC): Different views or observations of the same phenomenon
 
 rm(list = ls())
-setwd("~/Desktop/R_Root/ConsensusClustering/")
 library(ConsensusClustering)
 
 ## Data generation
