@@ -8,4 +8,4 @@ See package on CRAN [link](https://cran.r-project.org/web/packages/ConsensusClus
 
 ## Citation
 Please cite the following manuscript:
-* Yousefi, Behnam, Schwikowski Benno "Consensus Clustering for Robust Bioinformatics Analysis" BioRxiv (2024).
+* Behnam Yousefi, Benno Schwikowski, "Consensus Clustering for Robust Bioinformatics Analysis," BioRxiv (2024).
