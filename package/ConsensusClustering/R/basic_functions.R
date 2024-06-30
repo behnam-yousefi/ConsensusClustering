@@ -241,15 +241,15 @@ pam_clust_from_adj_mat = function (adj.mat, k = 2, alpha = 1, adj.conv = TRUE){
 #'
 coCluster_matrix = function(X, verbos = TRUE){
   Nsample = nrow(X)
-  Nmethod = ncol(X)
+  Nrepeat = ncol(X)
 
   M = matrix(0,Nsample,Nsample)
   I = M
 
   if (verbos)
-    pb = utils::txtProgressBar(min = 0, max = Nmethod, style = 3)
+    pb = utils::txtProgressBar(min = 0, max = Nrepeat, style = 3)
 
-  for (cl in 1:Nmethod){
+  for (cl in 1:Nrepeat){
     M = M + connectivity_matrix(X[,cl])
     I = I + indicator_matrix(X[,cl])
 
