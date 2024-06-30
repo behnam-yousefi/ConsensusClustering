@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' X = gaussian_clusters()$X
-#' Clusters = consensus_matrix(X, max.cluster=3, max.itter=10, verbos = FALSE)
+#' Clusters = generate_data_prtrb(X)
 #'
 generate_data_prtrb = function(X, cluster.method = "pam", k = 3, resample.ratio = 0.7,
                                rep = 10, distance.method = "euclidian", adj.conv = TRUE, func){
@@ -47,13 +47,13 @@ generate_data_prtrb = function(X, cluster.method = "pam", k = 3, resample.ratio 
     #   X_i = X_i + matrix(rnorm(nrow(X_i)*ncol(X_i), 0, sd.noise), nrow(X_i), ncol(X_i))
 
     ## Do clustering
-    if (clustering.method == "hclust")
+    if (cluster.method == "hclust")
       clusters = hir_clust_from_adj_mat(X_i, k = k, alpha = 1, adj.conv = adj.conv)
-    else if (clustering.method == "spectral")
+    else if (cluster.method == "spectral")
       clusters = spect_clust_from_adj_mat(X_i, k = k, max.eig = k, alpha = 1, adj.conv = adj.conv)
-    else if (clustering.method == "pam")
+    else if (cluster.method == "pam")
       clusters = pam_clust_from_adj_mat(X_i, k = k, alpha = 1, adj.conv = adj.conv)
-    else if (clustering.method == "custom")
+    else if (cluster.method == "custom")
       clusters = func(X_i, k)
     else
       stop("cluster.method not implemented")
@@ -96,14 +96,11 @@ generate_method_prtrb = function(X, cluster.method = "pam", range.k = c(2, 5), s
   assertthat::assert_that(rep > 0)
   assertthat::assert_that(range.k[1] > 1)
   assertthat::assert_that(range.k[2] > range.k[1])
-  assertthat::assert_that(method %in% c("silhouette", "random"))
+  assertthat::assert_that(sample.k.method %in% c("silhouette", "random"))
 
   Kmin = range.k[1]
   Kmax = range.k[2]
   Nsample = nrow(X)
-
-  # Convert X into adj_mat
-  distX = stats::dist(X, distance.method)
 
   # Perform the repeat loop
   Clusters = matrix(0, Nsample, rep)
@@ -111,6 +108,7 @@ generate_method_prtrb = function(X, cluster.method = "pam", range.k = c(2, 5), s
 
     ## Get the vakue of k
     if (sample.k.method == "silhouette"){
+      distX = stats::dist(X, distance.method)
       Sil = rep(0, Kmax)
       for (k in Kmin:Kmax){
         if (cluster.method == "kmeans"){
@@ -125,16 +123,16 @@ generate_method_prtrb = function(X, cluster.method = "pam", range.k = c(2, 5), s
           clusters = func(X, k)
           sil = cluster::silhouette(clusters, distX)
           Sil[k] = mean(sil[,"sil_width"])
-        }
         }else{
           stop("cluster.method not implemented")
         }
       Kopt = which.max(Sil)
+      }
     }else if (sample.k.method == "random"){
       Kopt = sample(Kmin:Kmax, 1)
-    }
-    else
+    }else{
       stop("sample.k.method not implemented")
+    }
 
     ##Do cluster
     if (cluster.method == "kmeans")
@@ -183,6 +181,7 @@ generate_multiview = function(X, cluster.method = "pam", range.k = c(2, 5), samp
   assertthat::assert_that(is.list(X))
   assertthat::assert_that(range.k[1] > 1)
   assertthat::assert_that(range.k[2] > range.k[1])
+  assertthat::assert_that(sample.k.method %in% c("silhouette", "random"))
 
   if (!is.na(sample.set)[1] & is.null(colnames(X[[1]])))
     stop("err")
