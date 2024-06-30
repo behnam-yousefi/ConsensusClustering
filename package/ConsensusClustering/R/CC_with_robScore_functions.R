@@ -59,6 +59,9 @@ consensus_matrix = function(X, max.cluster = 5, resample.ratio = 0.7, max.itter 
 
       RandInd = sample(Nsample, floor(resample.ratio*Nsample), replace = FALSE)
       X_i = X[RandInd,RandInd]
+      # sd.noise = .01
+      # if (sd.noise > 0)
+      #   X_i = X_i + matrix(rnorm(nrow(X_i)*ncol(X_i), 0, sd.noise), nrow(X_i), ncol(X_i))
 
       ## Do clustering
       if (clustering.method == "hclust")
