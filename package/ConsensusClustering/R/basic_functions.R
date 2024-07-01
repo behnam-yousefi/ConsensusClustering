@@ -276,8 +276,8 @@ coCluster_matrix = function(X, verbos = TRUE){
 #' @return matrix of similarities between clustering labels
 #'
 #' @details
-#' When performing performing several clustering, the cluster labels may no match with each other.
-#' To find correspondences between clusters, the similarity between different labels need to be calculated.
+#' When performing several clustering, the cluster labels may not match with each other.
+#' To find correspondences between clusters, the similarity between different labels will be calculated.
 #'
 #' @examples
 #' X = gaussian_clusters()$X

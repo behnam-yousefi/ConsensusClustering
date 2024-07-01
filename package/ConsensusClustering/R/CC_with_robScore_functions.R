@@ -148,9 +148,9 @@ consensus_matrix_data_prtrb = function(X, max.cluster = 5, resample.ratio = 0.7,
 #' Adj = list()
 #' for (i in 1:length(X_observation))
 #'   Adj[[i]] = adj_mat(X_observation[[i]], method = "euclidian")
-#' CM = multiview_consensus_matrix(Adj, max.cluster = 4, verbos = FALSE)
+#' CM = consensus_matrix_multiview(Adj, max.cluster = 4, verbos = FALSE)
 #'
-multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clustering.method = "hclust",
+consensus_matrix_multiview = function(X, max.cluster = 5, sample.set = NA, clustering.method = "hclust",
                                       adj.conv = TRUE, verbos = TRUE){
 
   assertthat::assert_that(is.list(X))
@@ -238,9 +238,9 @@ multiview_consensus_matrix = function(X, max.cluster = 5, sample.set = NA, clust
 #' X = gaussian_clusters()$X
 #' Adj = adj_mat(X, method = "euclidian")
 #' CM = consensus_matrix(Adj, max.cluster=3, max.itter=10)
-#' Result = CC_cluster_count(CM, plot.cdf=FALSE)
+#' Result = cc_cluster_count(CM, plot.cdf=FALSE)
 #'
-CC_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
+cc_cluster_count = function(CM, plot.cdf = TRUE, plot.logit = FALSE){
 
   Nsample = ncol(CM[[2]])
   K = 2:(length(CM))
