@@ -283,9 +283,9 @@ coCluster_matrix = function(X, verbos = TRUE){
 #' X = gaussian_clusters()$X
 #' x1 = kmeans(X, 5)$cluster
 #' x2 = kmeans(X, 5)$cluster
-#' Sim = lebel_similarity(x1, x2)
+#' Sim = label_similarity(x1, x2)
 #'
-lebel_similarity = function(x1, x2){
+label_similarity = function(x1, x2){
 
   assertthat::assert_that(length(x1) == length(x2))
 
@@ -342,7 +342,7 @@ cluster_relabel = function(x1, x2){
     return(c(row_index, col_index))
   }
 
-  Similarity = lebel_similarity(x1, x2)
+  Similarity = label_similarity(x1, x2)
   N_cluster = nrow(Similarity)
 
   index = order(Similarity, decreasing = TRUE)
